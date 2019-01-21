@@ -1,6 +1,3 @@
-# coding: utf-8
-
-
 import sys
 from pyqtwindow import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot
@@ -10,8 +7,6 @@ from PyQt5.QtWidgets import QMainWindow, QApplication,QTableWidgetItem,QHeaderVi
 #####
 import requests as r
 import pandas as pd
-import numpy
-from datetime import date
 from bs4 import BeautifulSoup
 #####
 
@@ -27,6 +22,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setWindowTitle("本益比法");
         self.tabledata.horizontalHeader().setStretchLastSection(True)
         self.tabledata.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
 
     
     def parseData(self,num):
@@ -52,7 +48,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         low_price = list()
         avg_price = list()
         eps = list()
-        for i in range(3,8):
+        for i in range(2,7):
             year.append(t[2].values[i][0])
             high_price.append(float(t[2].values[i][3]))
             low_price.append(float(t[2].values[i][4]))
@@ -75,8 +71,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         high_ROE.append(round(sum(high_ROE) / float(len(high_ROE)), 2))
         low_ROE.append(round(sum(low_ROE) / float(len(low_ROE)), 2))
         avg_ROE.append(round(sum(avg_ROE) / float(len(avg_ROE)), 2))
+        '''
+        Parse 4 Season EPS
+        '''
+        target_url = 'https://goodinfo.tw/StockInfo/StockBzPerformance.asp?STOCK_ID=' + str(num) + '&YEAR_PERIOD=9999&RPT_CAT=M_QUAR_ACC'
+        headers  = {
+            'accept': '*/*',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'en-US,en;q=0.9,zh;q=0.8,zh-TW;q=0.7',
+            'referer': 'https://goodinfo.tw/StockInfo/StockBzPerformance.asp?STOCK_ID=2330',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+                }
+        rs = r.session()
+        res = rs.get(target_url, headers=headers)
+        res.encoding=('utf8')
+        soup = BeautifulSoup(res.text, 'html.parser')
+        try:
+            t = pd.read_html(res.text)
+        except ValueError:    
+                if soup.text == '查無資料':
+                    print('此股票代號查無經營績效')
+        recmd_EPS_list = list()
+        for i in range(2,6):
+                    recmd_EPS_list.append(float(t[14].values[i][-3]))
+        recmd_EPS = round(sum(recmd_EPS_list) / float(len(recmd_EPS_list)), 2)
+        self.lineEdit_eps.setText(str(recmd_EPS))
+
             
-        return year, high_price, low_price, avg_price, eps, high_ROE, low_ROE, avg_ROE
+        return year, high_price, low_price, avg_price, eps, high_ROE, low_ROE, avg_ROE#, recmd_EPS
     
     
     def calcData(self,gEPS):
@@ -111,6 +133,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     item = QTableWidgetItem()
                     item.setText(str(self.data[num][i]))
                     self.tabledata.setItem(i, num, item)
+            self.tabledata.repaint()
+            print('Parse Done!')
     @pyqtSlot()
     def on_pushButton_calc_clicked(self):
         '''
@@ -128,6 +152,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         item = QTableWidgetItem()
                         item.setText(str(safe[num][i]))
                         self.tableprice.setItem(i, num, item)
+                self.tableprice.repaint()
+                print('Calc Done!')
         else:
             print('You Need To Parse Data First')
             return self.msg('no-parse')
@@ -148,7 +174,4 @@ if __name__ == "__main__":
     window.show()
     sys.exit(app.exec_())
     
-
-
-
 
