@@ -5,7 +5,7 @@
 ![Release][release-url]
 ![Download][download-url]
 
-
+![](https://i.imgur.com/AxVEWYn.png)
 
 ![](header.png)
 
