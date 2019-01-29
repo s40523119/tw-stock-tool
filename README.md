@@ -2,10 +2,10 @@
 > 利用近似四季EPS計算出安全邊際股票價格，僅供參考投資。
 
 
-[![Release][release-image]][release-url]
-[![Download][downlaod-image]][download-url]
+![Release][release-url]
+![Download][download-url]
 
-One to two paragraph statement about your product and what it does.
+
 
 ![](header.png)
 
