@@ -1,9 +1,10 @@
 # 本益比法
 > 利用近四季EPS計算出安全邊際股票價格，僅供參考投資。
 
-
+![Python][python-url]
 ![Release][release-url]
 ![Download][download-url]
+
 
 ![](https://i.imgur.com/AxVEWYn.png)
 
@@ -47,3 +48,4 @@ python stock.py
 <!-- Markdown link & img dfn's -->
 [release-url]: https://img.shields.io/github/release/s40523119/P-E-Ratio.svg
 [download-url]: https://img.shields.io/github/downloads/s40523119/P-E-Ratio/total.svg
+[python-url]: https://img.shields.io/badge/Python-3.7.2-green.svg
