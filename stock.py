@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 from pyqtwindow import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot
